@@ -66,7 +66,7 @@ Widget tableau(){
         backgroundColor: Colors.amberAccent,
         actions: [
           Icon(Icons.account_balance_wallet_rounded ,
-          size: 20,color: Colors.yellowAccent,)
+          size: 20,color: Colors.yellowAccent)
         ],
         ), 
 
