@@ -12,10 +12,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-  
       theme: ThemeData(
-
-        primarySwatch: Colors.blueGrey
+        primarySwatch: Colors.blueGrey,
       ),
       home: const HomePage(),
     );
@@ -30,33 +28,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String nom = '';
+  String phone = '';
+  String password = '';
 
-  late List<Geo> geos ;
+  final formkey = GlobalKey<FormState>() ;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    geos = Geo.getgeo();
+  validation(){
+
+  if(formkey.currentState!.validate()){
+    formkey.currentState!.save();
+
+    debugPrint('$nom') ;
+    debugPrint('$phone') ;
+    debugPrint('$password') ;
+
+    formkey.currentState!.reset() ;
   }
 
-Widget tableau(){
-  return DataTable(
-    columns: [
-      DataColumn(label: Text('Pays' , style: TextStyle(color: Colors.blueAccent),)),
-      DataColumn(label: Text('Capitale' , style: TextStyle(color: Colors.blueAccent),)),
-      DataColumn(label: Text('Continent' ,style: TextStyle(color: Colors.blueAccent),)),
-      ],
-     rows: geos.map( (geo) => DataRow(
-      cells: [
-        DataCell(Text(geo.pays),) ,
-        DataCell(Text(geo.capitale),) ,
-        DataCell(Text(geo.continent),) ,
-      ] ) ,
-      ).toList() ,
-      );
-}
-
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,48 +55,74 @@ Widget tableau(){
         title: Text('Mon application'),
         backgroundColor: Colors.amberAccent,
         actions: [
-          Icon(Icons.account_balance_wallet_rounded ,
-          size: 20,color: Colors.yellowAccent)
+          Icon(
+            Icons.account_balance_wallet_rounded,
+            size: 20,
+            color: Colors.yellowAccent,
+          )
         ],
-        ), 
-
+      ),
       body: Center(
-        child:SingleChildScrollView(
+          child: SingleChildScrollView(
+        child: Form(
+          key: formkey,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              TextFormField(
+                decoration: const InputDecoration(
+                    labelText: 'Nom',
+                    hintText: 'Entrer votre nom',
+                    icon: Icon(
+                      Icons.person,
+                      size: 20,
+                      color: Colors.blueAccent,
+                    )),
+                validator: (val) => val?.length == 0 ? 'Enter votre nom' : null,
+                onSaved: (val) => nom = val!,
+                keyboardType: TextInputType.text,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
+                    labelText: 'Telephone',
+                    hintText: 'Entrer votre numero',
+                    icon: Icon(
+                      Icons.phone_rounded,
+                      size: 20,
+                      color: Colors.blueAccent,
+                    )),
+                validator: (val) =>
+                    val?.length == 0 ? 'Enter votre numero' : null,
+                onSaved: (val) => phone = val!,
+                keyboardType: TextInputType.number,
+
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
+                    labelText: 'Mot de passe',
+                    hintText: 'Entrer votre mot de passe',
+                    icon: Icon(
+                      Icons.key_sharp,
+                      size: 20,
+                      color: Colors.blueAccent,
+                    )),
+                validator: (val) =>
+                    val?.length == 0 ? 'Enter votre mot de passe' : null,
+                onSaved: (val) => password = val!,
+                keyboardType: TextInputType.text,
+                obscureText: true,
+              ),
+
+              SizedBox(height: 20,),
         
-              tableau(),
-        
+              ElevatedButton(
+                onPressed: validation,
+                 child: const Text('S\'inscrire' , style: TextStyle(fontSize: 30 , fontWeight: FontWeight.bold)
+                 ,))
             ],
           ),
-        ) ),
+        ),
+      )),
     );
   }
 }
-
-
-class Geo {
-  String pays ;
-  String capitale ;
-  String continent ;
-
-  Geo({ required this.pays , required this.capitale , required this.continent }) ;
-
-  static List<Geo> getgeo() {
-    return <Geo> [
-      Geo(pays : 'Togo' , capitale: 'Lome' , continent: 'Afrique') ,
-      Geo(pays : 'Benin' , capitale: 'Porto-Novo' , continent: 'Afrique') ,
-      Geo(pays : 'Belgique' , capitale: 'Belgique' , continent: 'Europe') ,
-      Geo(pays : 'Coree' , capitale: 'Coree du sud' , continent: 'Asie') ,
-      Geo(pays : 'Canada' , capitale: 'Ottawa' , continent: 'Amerique') ,
-      Geo(pays : 'USA' , capitale: 'Washington' , continent: 'Amerique') ,
-      Geo(pays : 'Australie' , capitale: 'Australie' , continent: 'Oceanie') ,
-      Geo(pays : 'Dubai' , capitale: 'Dubai' , continent: 'Asie') ,
-      Geo(pays : 'Cameroon' , capitale: 'Yaounde' , continent: 'Afrique') ,
-      Geo(pays : 'Senegal' , capitale: 'Dakar' , continent: 'Afrique') ,
-      Geo(pays : 'Cote d\'ivoire' , capitale: 'Yamoussokro' , continent: 'Afrique') ,
-      Geo(pays : 'Tanzanie' , capitale: 'Tanzanie' , continent: 'Afrique') ,
-    ] ;}
-  
-}
-
